@@ -16,15 +16,21 @@ class PatientController {
     try {
       const { name, surname, phone } = req.body
 
-      const responseService = await this.crudService.create({
-        model: Patient,
-        paramsFilter: { name, surname },
-        paramsSave: req.body
-      })
+      const userId = (<any>req).userId
 
-      if (await Patient.findOne({ phone })) {
+      if (await Patient.findOne({ phone, userId })) {
         return res.status(400).send({ error: 'Phone linked to another user' })
       }
+
+      const paramsSave = Object.assign({}, req.body, { userId })
+
+      console.log(paramsSave)
+
+      const responseService = await this.crudService.create({
+        model: Patient,
+        paramsFilter: { name, surname, userId },
+        paramsSave
+      })
 
       if (!responseService.status) {
         return res.status(400).send({ error: responseService.message })
@@ -109,16 +115,15 @@ class PatientController {
       const { id } = req.params
       const userId = (<any>req).userId
 
-      const responseService = await this.crudService.delete({
-        model: Patient,
-        paramsFilter: { userId, _id: id }
-      })
+      const resp = await Patient.softDelete({ userId, _id: id })
 
-      if (!responseService.status) {
-        return res.status(400).send({ error: responseService.message })
+      console.log(resp)
+
+      if (resp.deleted <= 0) {
+        return res.status(400).send({ error: 'Error to delete patient' })
       }
 
-      return res.send(responseService.message)
+      return res.send('Patient Deleted')
     } catch (e) {
       console.error(e)
       return res.status(400).send({ error: 'Error to create user' })

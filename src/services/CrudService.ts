@@ -10,7 +10,6 @@ class CrudService {
       if (await params.model.findOne(params.paramsFilter)) {
         return { status: false, message: 'Already exists' }
       }
-
       const object = await params.model.create(params.paramsSave)
 
       return { status: true, object, message: 'created success' }

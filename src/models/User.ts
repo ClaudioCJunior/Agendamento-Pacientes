@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose'
 import * as bcrypt from 'bcryptjs'
+import { softDeletePlugin, SoftDeleteModel } from 'soft-delete-plugin-mongoose'
 
 interface UserInterface extends Document {
   name: string;
@@ -42,6 +43,8 @@ UserSchema.pre('save', async function (next) {
   next()
 })
 
-const User = model<UserInterface>('User', UserSchema)
+UserSchema.plugin(softDeletePlugin)
+
+const User = model<UserInterface, SoftDeleteModel<UserInterface>>('User', UserSchema)
 
 export default User

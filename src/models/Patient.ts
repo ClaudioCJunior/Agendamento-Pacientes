@@ -1,6 +1,7 @@
 import { Schema, model, Document } from 'mongoose'
+import { softDeletePlugin, SoftDeleteModel } from 'soft-delete-plugin-mongoose'
 
-interface patientInterface extends Document {
+interface PatientInterface extends Document {
   name: string;
   surname: string;
   phone: number;
@@ -31,6 +32,8 @@ const PatientSchema = new Schema({
   }
 })
 
-const Patient = model<patientInterface>('patient', PatientSchema)
+PatientSchema.plugin(softDeletePlugin)
+
+const Patient = model<PatientInterface, SoftDeleteModel<PatientInterface>>('patient', PatientSchema)
 
 export default Patient

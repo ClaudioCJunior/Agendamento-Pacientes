@@ -42,6 +42,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3",
     "reflect-metadata": "^0.1.13",
+    "soft-delete-plugin-mongoose": "^1.0.15",
     "tsyringe": "^4.7.0"
   }
 }
